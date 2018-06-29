@@ -1,7 +1,7 @@
 import Proposition from '../models/Proposition'
 
 const camaraURL = 'https://dadosabertos.camara.leg.br/api/v2/proposicoes?formato=json&siglaTipo=PL';
-const senadoURL = '';
+const senadoURL = 'http://legis.senado.leg.br/dadosabertos/materia/pls/.json';
 
 export default {
     searchCamara: (query) => {
