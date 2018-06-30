@@ -44,7 +44,7 @@ function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias, tram
     * TODO: NÃO ENTENDI O QUE É
     */
     let situacaoAtual = plDados.statusProposicao.descricaoSituacao
-    return new Proposition(prefixocasaIniciadora, numeroCasaIniciadora, anoCasaIniciadora, prefixoCasaRevisora, numeroCasaRevisadora, anoCasaRevisadora, autores,
+    return new Proposition(numeroCasaIniciadora, numeroCasaIniciadora, anoCasaIniciadora, prefixoCasaRevisora, numeroCasaRevisadora, anoCasaRevisadora, autores,
       ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
       acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes);
 }
