@@ -9,7 +9,8 @@ import {
   ListItemText,
   CircularProgress
 } from "@material-ui/core";
-import "./search.css";
+import { withRouter } from "react-router-dom";
+import "./styles/search.css";
 
 import Api from "../utils/Api";
 
@@ -22,6 +23,8 @@ class Search extends Component {
       pls: [],
       isLoading: false
     };
+
+    this.selectPL = this.selectPL.bind(this);
   }
 
   search() {
@@ -39,6 +42,10 @@ class Search extends Component {
 
   queryType(evt, queryType) {
     this.setState({ ...this.state, queryType });
+  }
+
+  selectPL(pl) {
+    this.props.history.push(`/pl/${pl.id}?num=${pl.numero}&ano=${pl.ano}`);
   }
 
   render() {
@@ -85,7 +92,7 @@ class Search extends Component {
           <List>
             {pls && !isLoading &&
               pls.map(pl => (
-                <ListItem key={pl.id} button>
+                <ListItem key={pl.id} button onClick={() => this.selectPL(pl)}>
 
                   <ListItemText
                     primary={`${pl.siglaTipo} ${pl.numero}/${pl.ano}`}
@@ -100,4 +107,4 @@ class Search extends Component {
   }
 }
 
-export default Search;
+export default withRouter(Search);
