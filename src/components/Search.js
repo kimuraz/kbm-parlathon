@@ -2,14 +2,13 @@ import React, { Component } from "react";
 import {
   TextField,
   Button,
-  BottomNavigation,
-  BottomNavigationAction,
   List,
   ListItem,
   ListItemText,
   CircularProgress
 } from "@material-ui/core";
 import { withRouter } from "react-router-dom";
+import { Search as SearchIcon } from "@material-ui/icons";
 import "./styles/search.css";
 
 import Api from "../utils/Api";
@@ -29,11 +28,10 @@ class Search extends Component {
 
   search() {
     this.setState({ ...this.state, isLoading: true }, () => {
-        Api.searchCamara(this.state.query).then(data => {
-          this.setState({ ...this.state, pls: data.dados, isLoading: false });
-        })
-      }
-    );
+      Api.searchCamara(this.state.query).then(data => {
+        this.setState({ ...this.state, pls: data.dados, isLoading: false });
+      });
+    });
   }
 
   updateQuery(query) {
@@ -49,32 +47,13 @@ class Search extends Component {
   }
 
   render() {
-    const { queryType, pls, isLoading } = this.state;
+    const { pls, isLoading } = this.state;
     return (
       <div className="search">
-      
-        <BottomNavigation
-          value={queryType}
-          onChange={(e, val) => this.queryType(e, val)}
-          showLabels
-          className="selector"
-        >
-          <BottomNavigationAction
-            label="Todos"
-            style={{ backgroundColor: queryType === 0 ? "#BBDEFB" : "#FFF" }}
-          />
-          <BottomNavigationAction
-            label="Câmara dos Deputados"
-            style={{ backgroundColor: queryType === 1 ? "#BBDEFB" : "#FFF" }}
-          />
-          <BottomNavigationAction
-            label="Senado Federal"
-            style={{ backgroundColor: queryType === 2 ? "#BBDEFB" : "#FFF" }}
-          />
-        </BottomNavigation>
         <div className="input">
           <TextField
             label="Pesquisa"
+            className="textField"
             onChange={e => this.updateQuery(e.target.value)}
           />
           <Button
@@ -84,16 +63,26 @@ class Search extends Component {
             onClick={() => this.search()}
           >
             Pesquisar
+            <SearchIcon style={{ marginLeft: "10px" }} />
           </Button>
         </div>
 
         <div className="listContainer">
-         { isLoading && <CircularProgress style={{marginTop: '30%'}}/> }
+          {isLoading && <CircularProgress style={{ marginTop: "30%" }} />}
           <List>
-            {pls && !isLoading &&
+            {pls &&
+              !isLoading &&
               pls.map(pl => (
-                <ListItem key={pl.id} button onClick={() => this.selectPL(pl)}>
-
+                <ListItem
+                  key={pl.id}
+                  button
+                  onClick={() => this.selectPL(pl)}
+                  style={{
+                    backgroundColor: "#FFF",
+                    borderRadius: "2px",
+                    marginTop: "5px"
+                  }}
+                >
                   <ListItemText
                     primary={`${pl.siglaTipo} ${pl.numero}/${pl.ano}`}
                     secondary={pl.ementa}

@@ -3,6 +3,31 @@
     text-align: center;
     height: calc(100vh - 30px);
     margin-top: 30px;
+    background-color: rgb(240, 240, 240);
+}
+.input {
+    width: 80%;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.input .textField {
+    width: 80%;
+}
+
+@media only screen and (max-width: 799px) {
+    .input {
+        flex-wrap: wrap;
+    }
+    .input .textField {
+        width: 100%;
+    }
+    .input button {
+        margin: 10px 0;
+        width: 100%;
+    }
 }
 
 .input button {

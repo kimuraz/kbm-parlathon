@@ -75,7 +75,6 @@ export default {
     },
 
     getPropositionCamara: (num, ano) => {
-        console.log(num, ano);
         let law = [num, ano]
 
         let autoresAPI = undefined
