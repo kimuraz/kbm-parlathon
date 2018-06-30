@@ -15,7 +15,8 @@ import {
   Done,
   MoveToInbox,
   Send,
-  AddBox
+  AddBox, 
+  Undo
 } from "@material-ui/icons";
 import queryString from "query-string";
 import {
@@ -100,6 +101,17 @@ class Timeline extends Component {
           color: "#FFF"
         });
       break;
+
+      case 140:
+      case 135:
+      case 640:
+      case 650:
+      case 503:
+        style = Object.assign(style, {
+          backgroundColor: "#26A69A",
+          color: "#FFF"
+        });
+      break;
       
       default:
         style = Object.assign(style, {
@@ -148,6 +160,13 @@ class Timeline extends Component {
         case 226:
         case 401:
           return <AddBox />
+
+        case 140:
+        case 135:
+        case 640:
+        case 650:
+        case 503:
+          return <Undo />
         default:
           return <AccountBalance/>
       }
