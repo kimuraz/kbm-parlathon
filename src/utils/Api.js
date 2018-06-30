@@ -3,51 +3,45 @@ import Proposition from '../models/Proposition'
 const camaraURL = 'https://dadosabertos.camara.leg.br/api/v2/proposicoes?formato=json&siglaTipo=PL';
 const senadoURL = 'http://legis.senado.leg.br/dadosabertos/materia/pls/.json';
 
-export default {
-    searchCamara: (query) => {
-        return fetch(`${camaraURL}&keywords=${query}`).then(res => res.json());
-    },
-}
+function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias, tramitacoes) {
+    plDados = plDados['dados']
 
-function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias) {
-  plDados = plDados['dados']
+    let numeroCasaIniciadora = String(plDados.numero)
+    let anoCasaIniciadora = String(plDados.ano)
 
-  let numeroCasaIniciadora = String(plDados.numero)
-  let anoCasaIniciadora = String(plDados.ano)
+    let numeroCasaRevisadora = undefined
+    let anoCasaRevisadora = undefined
+    if (plDados.uriPropPosterior) {
+      let urlCasaRevisadora = plDados.uriPropPosterior
+      urlCasaRevisadora = urlCasaRevisadora.split('/')
+      // const prefixo = urlCasaRevisadora[urlCasaRevisadora.length - 3]
+      const numero = urlCasaRevisadora[urlCasaRevisadora.length - 2]
+      const ano = urlCasaRevisadora[urlCasaRevisadora.length - 1]
 
-  let numeroCasaRevisadora = undefined
-  let anoCasaRevisadora = undefined
-  if (plDados.uriPropPosterior) {
-    let urlCasaRevisadora = plDados.uriPropPosterior
-    urlCasaRevisadora = urlCasaRevisadora.split('/')
-    // const prefixo = urlCasaRevisadora[urlCasaRevisadora.length - 3]
-    const numero = urlCasaRevisadora[urlCasaRevisadora.length - 2]
-    const ano = urlCasaRevisadora[urlCasaRevisadora.length - 1]
+      numeroCasaRevisadora = numero
+      anoCasaRevisadora = ano
+    } else {
 
-    numeroCasaRevisadora = numero
-    anoCasaRevisadora = ano
-  } else {
-
-  }
-  let ementa = plDados.ementa
-  let explicacaoEmenta = undefined
-  if (plDados.ementaDetalhada) {
-    explicacaoEmenta = plDados.ementaDetalhada
-  }
-  let formaTramitacao = undefined
-  /*
-   * TODO: tramitação conclusiva (não vai a Plenário). Não sei identificar esse dado
-   */
-  let regimeTramitacao = plDados.statusProposicao.regime
-  let dataHoraTramitacao = plDados.statusProposicao.dataHora
-  let acaoTramitacao = undefined
-  /*
-   * TODO: NÃO ENTENDI O QUE É
-   */
-  let situacaoAtual = plDados.statusProposicao.descricaoSituacao
-  return new Proposition(numeroCasaIniciadora, anoCasaIniciadora, numeroCasaRevisadora, anoCasaRevisadora, autores,
-    ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
-    acaoTramitacao, situacaoAtual, tempoCorridoDias)
+    }
+    let ementa = plDados.ementa
+    let explicacaoEmenta = undefined
+    if (plDados.ementaDetalhada) {
+      explicacaoEmenta = plDados.ementaDetalhada
+    }
+    let formaTramitacao = undefined
+    /*
+    * TODO: tramitação conclusiva (não vai a Plenário). Não sei identificar esse dado
+    */
+    let regimeTramitacao = plDados.statusProposicao.regime
+    let dataHoraTramitacao = plDados.statusProposicao.dataHora
+    let acaoTramitacao = undefined
+    /*
+    * TODO: NÃO ENTENDI O QUE É
+    */
+    let situacaoAtual = plDados.statusProposicao.descricaoSituacao
+    return new Proposition(numeroCasaIniciadora, anoCasaIniciadora, numeroCasaRevisadora, anoCasaRevisadora, autores,
+      ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
+      acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes);
 }
 
 function getAuthorsFromPL(autoresAPI) {
@@ -74,38 +68,41 @@ function getProcessingFromPL(orgaoTramitacao) {
   return orgaoTramitacao.nome
 }
 
-app.get('/', function (req, response) {
-  let law = req.query.law
-  if (law) {
-    law = law.split('-')
 
-    let autoresAPI = undefined
-    let plDados = undefined
-    let orgaoTramitacao = undefined
-    let tramitacoes = undefined
-    fetch(`https://dadosabertos.camara.leg.br/api/v2/proposicoes?formato=json&numero=${law[0]}&ano=${law[1]}`)
-    .then(res => res.json())
-    .then(json => fetch(`${json.dados[0].uri}?formato=json`))
-    .then(res => res.json())
-    .then(json => plDados = json)
-    .then(json => fetch(`${json['dados'].uriAutores}?formato=json`))
-    .then(res => res.json())
-    .then(json => autoresAPI = json)
-    .then(() => fetch(`${plDados['dados'].statusProposicao.uriOrgao}?formato=json`))
-    .then(res => res.json())
-    .then(json => orgaoTramitacao = json)
-    .then(() => fetch(`https://dadosabertos.camara.leg.br/api/v2/proposicoes/${plDados['dados'].id}/tramitacoes?formato=json`))
-    .then(res => res.json())
-    .then(json => tramitacoes = json)
-    .then(() => {
-      let autores = getAuthorsFromPL(autoresAPI)
-      let orgao = getProcessingFromPL(orgaoTramitacao)
-      let tempoCorridoDias = getTimeSinceBegin(tramitacoes)
-      let proposition = getDataFromPL(plDados, autores, orgao, tempoCorridoDias)
+export default {
+    searchCamara: (query) => {
+        return fetch(`${camaraURL}&keywords=${query}`).then(res => res.json());
+    },
 
-      response.send(proposition)
-    })
-  } else {
-    console.log('deu ruim')
-  }
-});
+    getPropositionCamara: (num, ano) => {
+        console.log(num, ano);
+        let law = [num, ano]
+
+        let autoresAPI = undefined
+        let plDados = undefined
+        let orgaoTramitacao = undefined
+        let tramitacoes = undefined
+        return fetch(`https://dadosabertos.camara.leg.br/api/v2/proposicoes?formato=json&numero=${law[0]}&ano=${law[1]}`)
+        .then(res => res.json())
+        .then(json => fetch(`${json.dados[0].uri}?formato=json`))
+        .then(res => res.json())
+        .then(json => plDados = json)
+        .then(json => fetch(`${json['dados'].uriAutores}?formato=json`))
+        .then(res => res.json())
+        .then(json => autoresAPI = json)
+        .then(() => fetch(`${plDados['dados'].statusProposicao.uriOrgao}?formato=json`))
+        .then(res => res.json())
+        .then(json => orgaoTramitacao = json)
+        .then(() => fetch(`https://dadosabertos.camara.leg.br/api/v2/proposicoes/${plDados['dados'].id}/tramitacoes?formato=json`))
+        .then(res => res.json())
+        .then(json => tramitacoes = json)
+        .then(() => {
+            let autores = getAuthorsFromPL(autoresAPI)
+            let orgao = getProcessingFromPL(orgaoTramitacao)
+            let tempoCorridoDias = getTimeSinceBegin(tramitacoes)
+            let proposition = getDataFromPL(plDados, autores, orgao, tempoCorridoDias, tramitacoes.dados)
+            return proposition;
+        })
+    }
+}
+

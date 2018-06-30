@@ -1,4 +1,4 @@
-class Proposition {
+export default class Proposition {
   /*
   * Colocar aqui as principais informações que precisarmos da proposição.
   * O intuito dessa class é mostrar, de forma padronizada,
@@ -6,7 +6,7 @@ class Proposition {
   */
   constructor(numeroCasaIniciadora, anoCasaIniciadora, numeroCasaRevisadora, anoCasaRevisadora, autores,
               ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
-              acaoTramitacao, situacaoAtual, tempoCorridoDias) {
+              acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes) {
     this.numeroCasaIniciadora = numeroCasaIniciadora
     this.anoCasaIniciadora = anoCasaIniciadora
     this.numeroCasaRevisadora = numeroCasaRevisadora
@@ -24,5 +24,6 @@ class Proposition {
      */
     this.situacaoAtual = situacaoAtual
     this.tempoCorridoDias = tempoCorridoDias
+    this.tramitacoes = tramitacoes
   }
 }
