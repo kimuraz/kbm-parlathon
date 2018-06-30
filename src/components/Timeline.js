@@ -15,7 +15,7 @@ import {
   Done,
   MoveToInbox,
   Send,
-  AddBox, 
+  AddBox,
   Undo
 } from "@material-ui/icons";
 import queryString from "query-string";
@@ -24,6 +24,16 @@ import {
   VerticalTimelineElement
 } from "react-vertical-timeline-component";
 import { Link } from "react-router-dom";
+import {
+  FacebookShareButton,
+  TwitterShareButton,
+  WhatsappShareButton
+} from "react-share";
+import {
+  FacebookIcon,
+  TwitterIcon,
+  WhatsappIcon,
+} from 'react-share';
 import "react-vertical-timeline-component/style.min.css";
 import "./styles/timeline.css";
 
@@ -53,8 +63,8 @@ class Timeline extends Component {
       });
     }
 
-    switch(parseInt(t.idTipoTramitacao, 10)) {
-      case 240: 
+    switch (parseInt(t.idTipoTramitacao, 10)) {
+      case 240:
       case 244:
       case 241:
       case 239:
@@ -84,14 +94,14 @@ class Timeline extends Component {
           backgroundColor: "#C62828",
           color: "#FFF"
         });
-      break;
+        break;
 
       case 500:
         style = Object.assign(style, {
           backgroundColor: "#FFCA28",
           color: "#FFF"
         });
-      break;
+        break;
 
       case 400:
       case 226:
@@ -100,7 +110,7 @@ class Timeline extends Component {
           backgroundColor: "#29B6F6",
           color: "#FFF"
         });
-      break;
+        break;
 
       case 140:
       case 135:
@@ -111,8 +121,8 @@ class Timeline extends Component {
           backgroundColor: "#26A69A",
           color: "#FFF"
         });
-      break;
-      
+        break;
+
       default:
         style = Object.assign(style, {
           backgroundColor: "#FF7961",
@@ -127,9 +137,8 @@ class Timeline extends Component {
     if (idx === 0) {
       return <NewReleases />;
     } else {
-
-      switch(parseInt(t.idTipoTramitacao, 10)) {
-        case 240: 
+      switch (parseInt(t.idTipoTramitacao, 10)) {
+        case 240:
         case 244:
         case 241:
         case 239:
@@ -151,24 +160,24 @@ class Timeline extends Component {
         case 1024:
         case 630:
         case 131:
-          return <MoveToInbox/>
+          return <MoveToInbox />;
 
         case 500:
-          return <Send />
+          return <Send />;
 
         case 400:
         case 226:
         case 401:
-          return <AddBox />
+          return <AddBox />;
 
         case 140:
         case 135:
         case 640:
         case 650:
         case 503:
-          return <Undo />
+          return <Undo />;
         default:
-          return <AccountBalance/>
+          return <AccountBalance />;
       }
     }
   }
@@ -244,6 +253,22 @@ class Timeline extends Component {
                   <br />
                   Clique e veja a linha do tempo!
                 </Button>
+                
+                <br />
+                <Typography color="textSecondary">
+                  Compartilhe o documento na íntegra!
+                </Typography>
+                <div style={{display: "flex", justifyContent: "space-evenly"}}>
+                  <FacebookShareButton url={pl.url} quote={"Veja o Projeto de Lei" + pl.numeroCasaIniciadora + "/" + pl.anoCasaIniciadora} >
+                    <FacebookIcon round/>
+                  </FacebookShareButton>
+                  <WhatsappShareButton url={pl.url} title={"Veja o Projeto de Lei" + pl.numeroCasaIniciadora + "/" + pl.anoCasaIniciadora} >
+                    <WhatsappIcon round/>
+                  </WhatsappShareButton>
+                  <TwitterShareButton url={pl.url} title={"Veja o Projeto de Lei " + pl.numeroCasaIniciadora + "/" + pl.anoCasaIniciadora} >
+                    <TwitterIcon round/>
+                  </TwitterShareButton>
+                </div>
               </CardContent>
             </Card>
           )}
@@ -259,7 +284,7 @@ class Timeline extends Component {
                   icon={this._getIcon(t, idx)}
                   key={idx}
                 >
-                  <TramitacaoCard tramitacao={t}/>
+                  <TramitacaoCard tramitacao={t} />
                 </VerticalTimelineElement>
               ))}
           </VerticalTimeline>

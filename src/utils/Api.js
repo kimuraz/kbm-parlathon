@@ -41,7 +41,7 @@ function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias, tram
     let situacaoAtual = plDados.statusProposicao.descricaoSituacao
     return new Proposition(numeroCasaIniciadora, anoCasaIniciadora, numeroCasaRevisadora, anoCasaRevisadora, autores,
       ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
-      acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes);
+      acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes, plDados.urlInteiroTeor);
 }
 
 function getAuthorsFromPL(autoresAPI) {

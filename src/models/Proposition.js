@@ -22,7 +22,8 @@ export default class Proposition {
     acaoTramitacao,
     situacaoAtual,
     tempoCorridoDias,
-    tramitacoes
+    tramitacoes,
+    urlInteiroTeor
   ) {
     this.numeroCasaIniciadora = numeroCasaIniciadora;
     this.anoCasaIniciadora = anoCasaIniciadora;
@@ -42,6 +43,7 @@ export default class Proposition {
     this.situacaoAtual = situacaoAtual;
     this.tempoCorridoDias = tempoCorridoDias;
     this.tramitacoes = tramitacoes;
+    this.url = urlInteiroTeor;
   }
 
   toStatusString() {
@@ -65,6 +67,10 @@ export default class Proposition {
         <strong style={{ fontSize: "14px", color: "#81D4FA" }}>
           idealizado por
         </strong>: {this.autores.join(", ")}
+        <br/>
+        <strong style={{ fontSize: "14px", color: "#81D4FA" }}>
+          Duração: {this.tempoCorridoDias} dias
+        </strong>
       </Typography>
     );
   }
