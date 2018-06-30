@@ -4,11 +4,13 @@ export default class Proposition {
   * O intuito dessa class é mostrar, de forma padronizada,
   * as proposições vindas das duas diferentes APIs.
   */
-  constructor(numeroCasaIniciadora, anoCasaIniciadora, numeroCasaRevisadora, anoCasaRevisadora, autores,
+  constructor(prefixocasaIniciadora, numeroCasaIniciadora, anoCasaIniciadora, prefixoCasaRevisora, numeroCasaRevisadora, anoCasaRevisadora, autores,
               ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
               acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes) {
+    this.prefixocasaIniciadora = prefixocasaIniciadora
     this.numeroCasaIniciadora = numeroCasaIniciadora
     this.anoCasaIniciadora = anoCasaIniciadora
+    this.prefixoCasaRevisora = prefixoCasaRevisora
     this.numeroCasaRevisadora = numeroCasaRevisadora
     this.anoCasaRevisadora = anoCasaRevisadora
     this.autores = autores

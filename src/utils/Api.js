@@ -3,26 +3,31 @@ import Proposition from '../models/Proposition'
 const camaraURL = 'https://dadosabertos.camara.leg.br/api/v2/proposicoes?formato=json&siglaTipo=PL';
 const senadoURL = 'http://legis.senado.leg.br/dadosabertos/materia/pls/.json';
 
-function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias, tramitacoes) {
+function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias, tramitacoes, casaIniciadora) {
     plDados = plDados['dados']
 
-    let numeroCasaIniciadora = String(plDados.numero)
-    let anoCasaIniciadora = String(plDados.ano)
+    let prefixocasaIniciadora = casaIniciadora.pre
+    let numeroCasaIniciadora = casaIniciadora.numero
+    let anoCasaIniciadora = casaIniciadora.ano
 
     let numeroCasaRevisadora = undefined
     let anoCasaRevisadora = undefined
+    let prefixoCasaRevisora = undefined
     if (plDados.uriPropPosterior) {
       let urlCasaRevisadora = plDados.uriPropPosterior
       urlCasaRevisadora = urlCasaRevisadora.split('/')
-      // const prefixo = urlCasaRevisadora[urlCasaRevisadora.length - 3]
       const numero = urlCasaRevisadora[urlCasaRevisadora.length - 2]
       const ano = urlCasaRevisadora[urlCasaRevisadora.length - 1]
 
       numeroCasaRevisadora = numero
       anoCasaRevisadora = ano
-    } else {
-
+      prefixoCasaRevisora = 'PLS'
+    } else if (prefixocasaIniciadora === 'PLS') {
+      numeroCasaRevisadora = String(plDados.numero)
+      anoCasaRevisadora = String(plDados.ano)
+      prefixoCasaRevisora = 'PLC'
     }
+
     let ementa = plDados.ementa
     let explicacaoEmenta = undefined
     if (plDados.ementaDetalhada) {
@@ -39,7 +44,7 @@ function getDataFromPL(plDados, autores, orgaoTramitacao, tempoCorridoDias, tram
     * TODO: NÃO ENTENDI O QUE É
     */
     let situacaoAtual = plDados.statusProposicao.descricaoSituacao
-    return new Proposition(numeroCasaIniciadora, anoCasaIniciadora, numeroCasaRevisadora, anoCasaRevisadora, autores,
+    return new Proposition(prefixocasaIniciadora, numeroCasaIniciadora, anoCasaIniciadora, prefixoCasaRevisora, numeroCasaRevisadora, anoCasaRevisadora, autores,
       ementa, explicacaoEmenta, formaTramitacao, regimeTramitacao, dataHoraTramitacao, orgaoTramitacao,
       acaoTramitacao, situacaoAtual, tempoCorridoDias, tramitacoes);
 }
@@ -68,6 +73,25 @@ function getProcessingFromPL(orgaoTramitacao) {
   return orgaoTramitacao.nome
 }
 
+function getCasaIniciadora(tramitacoes, numeroCamara, anoCamara) {
+  let tramitacaoData = {}
+  console.log(tramitacoes.dados[0].idTipoTramitacao)
+  if (tramitacoes.dados[0].idTipoTramitacao === "500") {
+    tramitacaoData['pre'] = 'PLS'
+    let despachoTexto = tramitacoes.dados[0].despacho
+    despachoTexto = despachoTexto.replace(/\s+/g,' ').split('Projeto de Lei do Senado nº ')[1].split(',')
+    tramitacaoData['numero'] = despachoTexto[0]
+    let despachoAno = despachoTexto[1].split(' ')
+    tramitacaoData['ano'] = despachoAno[despachoAno.length - 1]
+  } else {
+    tramitacaoData['pre'] = 'PLC'
+    tramitacaoData['numero'] = String(numeroCamara)
+    tramitacaoData['ano'] = String(anoCamara)
+
+  }
+
+  return tramitacaoData
+}
 
 export default {
     searchCamara: (query) => {
@@ -100,7 +124,10 @@ export default {
             let autores = getAuthorsFromPL(autoresAPI)
             let orgao = getProcessingFromPL(orgaoTramitacao)
             let tempoCorridoDias = getTimeSinceBegin(tramitacoes)
-            let proposition = getDataFromPL(plDados, autores, orgao, tempoCorridoDias, tramitacoes.dados)
+            let numeroCamara = plDados.dados.numero
+            let anoCamara = plDados.dados.ano
+            let casaIniciadora = getCasaIniciadora(tramitacoes, numeroCamara, anoCamara)
+            let proposition = getDataFromPL(plDados, autores, orgao, tempoCorridoDias, tramitacoes.dados, casaIniciadora)
             return proposition;
         })
     }

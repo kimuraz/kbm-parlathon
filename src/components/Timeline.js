@@ -25,6 +25,7 @@ class Timeline extends Component {
     const { ano, num } = queryString.parse(this.props.location.search);
 
     Api.getPropositionCamara(num, ano).then((dt) => {
+      console.log(dt)
       this.setState({ ...this.state, pl: dt });
     });
   }
