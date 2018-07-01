@@ -18,7 +18,6 @@ import {
   AddBox,
   Undo
 } from "@material-ui/icons";
-import queryString from "query-string";
 import {
   VerticalTimeline,
   VerticalTimelineElement
@@ -29,11 +28,7 @@ import {
   TwitterShareButton,
   WhatsappShareButton
 } from "react-share";
-import {
-  FacebookIcon,
-  TwitterIcon,
-  WhatsappIcon,
-} from 'react-share';
+import { FacebookIcon, TwitterIcon, WhatsappIcon } from "react-share";
 import "react-vertical-timeline-component/style.min.css";
 import "./styles/timeline.css";
 
@@ -190,7 +185,15 @@ class Timeline extends Component {
 
   componentDidMount() {
     const selectedPlId = this.props.match.params.plId;
-    const { ano, num } = queryString.parse(this.props.location.search);
+    const search = this.props.location.search.substring(1);
+    const { ano, num } = JSON.parse(
+      '{"' +
+        decodeURI(search)
+          .replace(/"/g, '\\"')
+          .replace(/&/g, '","')
+          .replace(/=/g, '":"') +
+        '"}'
+    );
 
     Api.getPropositionCamara(num, ano).then(dt => {
       this.setState({ ...this.state, pl: dt, isLoading: false });
@@ -253,20 +256,46 @@ class Timeline extends Component {
                   <br />
                   Clique e veja a linha do tempo!
                 </Button>
-                
+
                 <br />
                 <Typography color="textSecondary">
                   Compartilhe o documento na íntegra!
                 </Typography>
-                <div style={{display: "flex", justifyContent: "space-evenly"}}>
-                  <FacebookShareButton url={pl.url} quote={"Veja o Projeto de Lei" + pl.numeroCasaIniciadora + "/" + pl.anoCasaIniciadora} >
-                    <FacebookIcon round/>
+                <div
+                  style={{ display: "flex", justifyContent: "space-evenly" }}
+                >
+                  <FacebookShareButton
+                    url={pl.url}
+                    quote={
+                      "Veja o Projeto de Lei" +
+                      pl.numeroCasaIniciadora +
+                      "/" +
+                      pl.anoCasaIniciadora
+                    }
+                  >
+                    <FacebookIcon round />
                   </FacebookShareButton>
-                  <WhatsappShareButton url={pl.url} title={"Veja o Projeto de Lei" + pl.numeroCasaIniciadora + "/" + pl.anoCasaIniciadora} >
-                    <WhatsappIcon round/>
+                  <WhatsappShareButton
+                    url={pl.url}
+                    title={
+                      "Veja o Projeto de Lei" +
+                      pl.numeroCasaIniciadora +
+                      "/" +
+                      pl.anoCasaIniciadora
+                    }
+                  >
+                    <WhatsappIcon round />
                   </WhatsappShareButton>
-                  <TwitterShareButton url={pl.url} title={"Veja o Projeto de Lei " + pl.numeroCasaIniciadora + "/" + pl.anoCasaIniciadora} >
-                    <TwitterIcon round/>
+                  <TwitterShareButton
+                    url={pl.url}
+                    title={
+                      "Veja o Projeto de Lei " +
+                      pl.numeroCasaIniciadora +
+                      "/" +
+                      pl.anoCasaIniciadora
+                    }
+                  >
+                    <TwitterIcon round />
                   </TwitterShareButton>
                 </div>
               </CardContent>
