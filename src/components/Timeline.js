@@ -259,7 +259,7 @@ class Timeline extends Component {
 
                 <br />
                 <Typography color="textSecondary">
-                  Compartilhe o documento na íntegra!
+                  Compartilhe o <a href={pl.url}>documento</a> na íntegra!
                 </Typography>
                 <div
                   style={{ display: "flex", justifyContent: "space-evenly" }}

@@ -30,14 +30,13 @@ class TramitacaoCard extends Component {
     this.setState({ ...this.state, isOrgaoOpen: false });
   }
 
-
   render() {
     const { tramitacao } = this.props;
     const { isOrgaoOpen } = this.state;
 
     return (
       <div>
-        <Card style={{ border: 'none', boxShadow: 'none'}}>
+        <Card style={{ border: "none", boxShadow: "none" }}>
           <CardContent>
             <Typography color="textSecondary">
               {moment(tramitacao.dataHora).format("LLL")}
@@ -64,6 +63,7 @@ class TramitacaoCard extends Component {
                 href={tramitacao.url}
                 target="_blank"
                 download={`PL${tramitacao.numero}/${tramitacao.ano}`}
+                style={{ width: "100%" }}
               >
                 <Button style={{ width: "100%" }} color="primary">
                   <InsertDriveFile style={{ marginRight: "10px" }} />
